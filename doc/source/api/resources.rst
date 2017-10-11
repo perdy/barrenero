@@ -20,4 +20,3 @@ Resources
 
 These are the resources exposed by Barrenero API.
 
-

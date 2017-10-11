@@ -1,0 +1,275 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Barrenero",
+		"_postman_id": "6a4f1b69-2610-fc9c-aed0-057b1755f964",
+		"description": "Barrenero API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"description": "",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{host}}/api/v1/auth/register",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"description": "Username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Password",
+									"type": "text"
+								},
+								{
+									"key": "account",
+									"value": "",
+									"description": "Wallet account",
+									"type": "text"
+								},
+								{
+									"key": "api_password",
+									"value": "",
+									"description": "API Superuser Password",
+									"type": "text"
+								}
+							]
+						},
+						"description": "Register a new user providing username, password, account and api_password"
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "http://{{host}}/api/v1/auth/user",
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "",
+									"description": "Username",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "Password",
+									"type": "text"
+								}
+							]
+						},
+						"description": "Retrieve user token and user given username and password"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ether",
+			"description": "",
+			"item": [
+				{
+					"name": "Status",
+					"request": {
+						"url": "http://{{host}}/api/v1/ether/status",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "barrenero_miner_ether",
+									"description": "Systemd service name",
+									"type": "text"
+								}
+							]
+						},
+						"description": "Retrieve Ether miner status"
+					},
+					"response": []
+				},
+				{
+					"name": "Nanopool",
+					"request": {
+						"url": "http://{{host}}/api/v1/ether/nanopool",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Token {{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "barrenero_miner_ether",
+									"description": "Systemd service name",
+									"type": "text"
+								}
+							]
+						},
+						"description": "Retrieve Ether nanopool status"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restart",
+			"request": {
+				"url": "http://{{host}}/api/v1/restart",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "barrenero_miner_ether",
+							"description": "Systemd service name",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Restart a Barrenero's Systemd service giving the name"
+			},
+			"response": []
+		},
+		{
+			"name": "Status",
+			"request": {
+				"url": "http://{{host}}/api/v1/status",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "barrenero_miner_ether",
+							"description": "Systemd service name",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Retrieve graphic cards and systemd services status"
+			},
+			"response": []
+		},
+		{
+			"name": "Wallet",
+			"request": {
+				"url": "http://{{host}}/api/v1/status",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "barrenero_miner_ether",
+							"description": "Systemd service name",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Wallet status"
+			},
+			"response": []
+		},
+		{
+			"name": "Storj",
+			"request": {
+				"url": "http://{{host}}/api/v1/status",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "barrenero_miner_ether",
+							"description": "Systemd service name",
+							"type": "text"
+						}
+					]
+				},
+				"description": "Retrieve Storj nodes status"
+			},
+			"response": []
+		}
+	]
+}

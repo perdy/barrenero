@@ -20,3 +20,26 @@ Resources
 
 These are the resources exposed by Barrenero API.
 
+Register User
+-------------
+
+Login User
+----------
+
+Barrenero Status
+----------------
+
+Restart Service
+---------------
+
+Ether Miner Status
+------------------
+
+Ether Miner Nanopool
+--------------------
+
+Storj Miner Status
+------------------
+
+Ethereum Wallet
+---------------

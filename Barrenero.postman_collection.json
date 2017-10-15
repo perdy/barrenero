@@ -220,7 +220,7 @@
 		{
 			"name": "Wallet",
 			"request": {
-				"url": "http://{{host}}/api/v1/status",
+				"url": "http://{{host}}/api/v1/wallet",
 				"method": "GET",
 				"header": [
 					{
@@ -240,14 +240,14 @@
 						}
 					]
 				},
-				"description": "Wallet status"
+				"description": "Wallet status, including balance for each token and last transactions."
 			},
 			"response": []
 		},
 		{
 			"name": "Storj",
 			"request": {
-				"url": "http://{{host}}/api/v1/status",
+				"url": "http://{{host}}/api/v1/storj",
 				"method": "GET",
 				"header": [
 					{

@@ -15,22 +15,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Telegram
-========
+Restart Service
+===============
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents
+Restart a Barrenero's Systemd service giving the name.
 
-   Installation<installation.rst>
+Request
+-------
 
-Overview
+URL
+^^^
+
+`/api/v1/restart`
+
+Headers
+^^^^^^^
+
+Authorization
+    Token <auth_token>
+
+Parameters
+^^^^^^^^^^
+
+name
+    Systemd service name to restart
+
+Response
 --------
 
-Telegram code can be found in this `repository <https://github.com/PeRDy/barrenero-telegram>`_.
+.. code:: javascript
 
-Telegram bot for Barrenero that serves information and provides interactive methods through Barrenero API.
-
-This bot provides a real time interaction with Barrenero through its API, allowing a simple way to register an user in
-the API and link it to a Telegram chat. Once the registration is done, it's possible to query for Barrenero status,
-restart services and performs any action allowed in the API.
+    {
+      "name": "barrenero_miner_ether",
+      "status": "restarted"
+    }

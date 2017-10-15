@@ -20,26 +20,16 @@ Resources
 
 These are the resources exposed by Barrenero API.
 
-Register User
--------------
+.. toctree::
+    :maxdepth: 1
+    :caption: Resources
 
-Login User
-----------
+    Register User<resources/register_user.rst>
+    Login User<resources/login_user.rst>
+    Barrenero Status<resources/status.rst>
+    Restart Service<resources/restart.rst>
+    Ether Miner Status<resources/ether_status.rst>
+    Ether Miner Nanopool<resources/ether_nanopool.rst>
+    Storj Miner Status<resources/storj.rst>
+    Wallet<resources/wallet.rst>
 
-Barrenero Status
-----------------
-
-Restart Service
----------------
-
-Ether Miner Status
-------------------
-
-Ether Miner Nanopool
---------------------
-
-Storj Miner Status
-------------------
-
-Ethereum Wallet
----------------

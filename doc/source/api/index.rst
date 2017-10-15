@@ -15,15 +15,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Miner
-=====
+API
+===
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents
 
    Installation<installation.rst>
    Configuration<configuration.rst>
+   API Resources<resources.rst>
 
 Overview
 --------

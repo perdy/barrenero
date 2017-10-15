@@ -26,14 +26,35 @@ Installation
 
 2. Configure barrenero services as explained :doc:`here <configuration>`.
 
-3. Build the service:
+3. Build services:
 
     .. code:: console
 
-        ./make build
+        sudo ./make build
 
 4. Reboot or restart barrenero:
 
     .. code:: console
 
-        ./make restart
+        sudo ./make restart
+
+Update
+======
+
+1. Update services:
+
+    .. code:: console
+
+        sudo ./make update
+
+2. Build services:
+
+    .. code:: console
+
+        sudo ./make build
+
+2. Reboot or restart barrenero:
+
+    .. code:: console
+
+        sudo ./make restart

@@ -15,22 +15,43 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Telegram
-========
+Storj Miner Status
+==================
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents
+Retrieve Storj nodes status.
 
-   Installation<installation.rst>
+Request
+-------
 
-Overview
+URL
+^^^
+
+`/api/v1/storj`
+
+Headers
+^^^^^^^
+
+Authorization
+    Token <auth_token>
+
+Response
 --------
 
-Telegram code can be found in this `repository <https://github.com/PeRDy/barrenero-telegram>`_.
+.. code:: javascript
 
-Telegram bot for Barrenero that serves information and provides interactive methods through Barrenero API.
-
-This bot provides a real time interaction with Barrenero through its API, allowing a simple way to register an user in
-the API and link it to a Telegram chat. Once the registration is done, it's possible to query for Barrenero status,
-restart services and performs any action allowed in the API.
+    [
+      {
+        "id": string,
+        "status": string,
+        "config_path": string,
+        "uptime": string,
+        "restarts": int,
+        "peers": int,
+        "offers": int,
+        "data_received": int,
+        "delta": int,
+        "port": int,
+        "shared": string,
+        "shared_percent": int
+      }
+    ]

@@ -28,6 +28,13 @@ except ImportError:
 
 logger = logging.getLogger('cli')
 
+DONATE_TEXT = '''
+This project is free and open sourced, you can use it, spread the word, contribute to the codebase and help us donating:
+* Ether: 0x566d41b925ed1d9f643748d652f4e66593cba9c9
+* Bitcoin: 1Jtj2m65DN2UsUzxXhr355x38T6pPGhqiA
+* PayPal: barrenerobot@gmail.com
+'''
+
 SERVICES = {
     'api': {
         'url': 'https://github.com/PeRDy/barrenero-api',
@@ -63,6 +70,18 @@ def superuser(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def donate(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+
+        logger.info(DONATE_TEXT)
+
+        return result
+    return wrapper
+
 
 def default_input(input_str, default=None):
     input_str = input_str + ' [{}]: '.format(default)
@@ -146,6 +165,7 @@ def build_service(service, path):
          args=((('service',), {'help': 'Services to update', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
                (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
          parser_opts={'help': 'Update Barrenero services'})
+@donate
 @superuser
 def update(*args, **kwargs):
     for service in kwargs['service']:
@@ -156,6 +176,7 @@ def update(*args, **kwargs):
          args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
                (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
          parser_opts={'help': 'Install Barrenero services'})
+@donate
 @superuser
 def install(*args, **kwargs):
     barrenero_path = os.path.abspath(os.path.join(kwargs['path'], 'barrenero'))
@@ -185,6 +206,7 @@ def install(*args, **kwargs):
          args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
                (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
          parser_opts={'help': 'Restart Barrenero services'})
+@donate
 @superuser
 def restart(*args, **kwargs):
     for service in kwargs['service']:
@@ -195,6 +217,7 @@ def restart(*args, **kwargs):
          args=((('service',), {'help': 'Services to build', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
                (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
          parser_opts={'help': 'Build Barrenero services'})
+@donate
 @superuser
 def build(*args, **kwargs):
     for service in kwargs['service']:
@@ -202,6 +225,7 @@ def build(*args, **kwargs):
 
 
 @command(command_type=CommandType.PYTHON, parser_opts={'help': 'Clean installer'})
+@donate
 def clean(*args, **kwargs):
     shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-miner')), ignore_errors=True)
     shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-api')), ignore_errors=True)

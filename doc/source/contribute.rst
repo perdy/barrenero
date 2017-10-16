@@ -28,3 +28,4 @@ This project is free and open sourced, you can use it, spread the word, contribu
 
 :Ether: 0x566d41b925ed1d9f643748d652f4e66593cba9c9
 :Bitcoin: 1Jtj2m65DN2UsUzxXhr355x38T6pPGhqiA
+:PayPal: barrenerobot@gmail.com

@@ -51,7 +51,7 @@ Update
 
     .. code:: console
 
-        sudo ./make build
+        sudo ./make build --no-cache
 
 2. Reboot or restart barrenero:
 

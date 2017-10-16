@@ -109,11 +109,13 @@ def install_service(service, *args, **kwargs):
     # Clone or update
     if not os.path.exists(service_path):
         logger.info('Downloading Barrenero %s', service)
-        Repo.clone_from(SERVICES[service]['url'], service_path)
+        service_repo = Repo.clone_from(SERVICES[service]['url'], service_path)
+        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
     else:
         logger.info('Updating Barrenero %s', service)
         service_repo = Repo(service_path)
         service_repo.remotes.origin.fetch()
+        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
         service_repo.remotes.origin.pull()
 
     # Run installation
@@ -134,6 +136,7 @@ def update_service(service, path):
         logger.info('Updating Barrenero %s', service)
         service_repo = Repo(service_path)
         service_repo.remotes.origin.fetch()
+        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
         service_repo.remotes.origin.pull()
 
 
@@ -149,7 +152,7 @@ def restart_service(service, path):
         subprocess.run(shlex.split('./make restart'))
 
 
-def build_service(service, path):
+def build_service(service, path, no_cache):
     service_path = os.path.abspath(os.path.join(path, 'barrenero', SERVICES[service]['name']))
 
     # Check if service already exists and update it
@@ -158,7 +161,10 @@ def build_service(service, path):
     else:
         logger.info('Updating Barrenero %s', service)
         os.chdir(service_path)
-        subprocess.run(shlex.split('./make build'))
+        cmd = shlex.split('./make build')
+        if no_cache:
+            cmd.append('--no-cache')
+        subprocess.run(cmd)
 
 
 @command(command_type=CommandType.PYTHON,
@@ -215,13 +221,14 @@ def restart(*args, **kwargs):
 
 @command(command_type=CommandType.PYTHON,
          args=((('service',), {'help': 'Services to build', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
+               (('--no-cache',), {'help': 'Full build without using cache', 'action': 'store_true'}),
                (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
          parser_opts={'help': 'Build Barrenero services'})
 @donate
 @superuser
 def build(*args, **kwargs):
     for service in kwargs['service']:
-        build_service(service, kwargs['path'])
+        build_service(service, kwargs['path'], kwargs['no_cache'])
 
 
 @command(command_type=CommandType.PYTHON, parser_opts={'help': 'Clean installer'})

@@ -51,8 +51,11 @@ Response
       },
       "transactions": [
         {
+          "token": {
+            "name": string,
+            "symbol": string
+          },
           "hash": string,
-          "contract_address": string,
           "source": string,
           "destination": string,
           "value": float,

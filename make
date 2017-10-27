@@ -51,6 +51,11 @@ SERVICES = {
         'name': 'barrenero-telegram',
         'systemd': ['barrenero_telegram']
     },
+    'telegraf': {
+        'url': 'https://github.com/PeRDy/barrenero-telegraf',
+        'name': 'barrenero-telegraf',
+        'systemd': ['barrenero_telegraf']
+    },
 }
 
 
@@ -207,6 +212,23 @@ def install(*args, **kwargs):
                           'introduce the token generated: ')
         install_service('telegram', bot_token, path=barrenero_path)
 
+    if 'telegraf' in kwargs['service']:
+        barrenero_api_token = input('Barrenero API token: ')
+        influxdb_url = input('InfluxDB URL: ')
+        influxdb_database = input('InfluxDB Database: ')
+        influxdb_username = input('InfluxDB Username: ')
+        influxdb_password = input('InfluxDB Password: ')
+
+        install_kwargs = {
+            'pathh': barrenero_path,
+        }
+        if influxdb_username:
+            install_kwargs.update({
+                'influxdb_username': influxdb_username,
+                'influxdb_password': influxdb_password,
+            })
+        install_service('telegraf', barrenero_api_token, influxdb_url, influxdb_database, **install_kwargs)
+
 
 @command(command_type=CommandType.PYTHON,
          args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
@@ -237,6 +259,7 @@ def clean(*args, **kwargs):
     shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-miner')), ignore_errors=True)
     shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-api')), ignore_errors=True)
     shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-telegram')), ignore_errors=True)
+    shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-telegraf')), ignore_errors=True)
 
 
 if __name__ == '__main__':

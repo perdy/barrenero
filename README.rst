@@ -94,3 +94,11 @@ This bot provides a real time interaction with Barrenero through its API, allowi
 the API and link it to a Telegram chat. Once the registration is done, it's possible to query for Barrenero status,
 restart services and performs any action allowed in the API.
 
+Barrenero Telegraf
+^^^^^^^^^^^^^^^^^^
+
+Telegraf code can be found in this `repository <https://github.com/PeRDy/barrenero-telegraf>`_.
+
+Extension for Barrenero that harvests information and send it using Telegraf.
+
+This extension provides an automatic way of harvesting Barrenero status through its API and send it through Telegraf.

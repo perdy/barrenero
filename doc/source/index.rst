@@ -42,6 +42,9 @@ Telegram
    Telegram bot for Barrenero that serves information and provides interactive methods through Barrenero API.
    Code can be found in this `repository <https://github.com/PeRDy/barrenero-telegram>`_.
 
+Telegraf
+   Extension for Barrenero that harvests information and send it using Telegraf.
+   Code can be found in this `repository <https://github.com/PeRDy/barrenero-telegraf>`_.
 
 Code repository can be found in `GitHub <https://github.com/PeRDy/barrenero>`_.
 
@@ -75,6 +78,7 @@ Requirements
    Miner<miner/index.rst>
    API<api/index.rst>
    Telegram<telegram/index.rst>
+   Telegraf<telegraf/index.rst>
 
 Indices and tables
 ==================

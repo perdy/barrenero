@@ -1,0 +1,31 @@
+[agent]
+interval = "60s"
+round_interval = true
+metric_batch_size = 1000
+metric_buffer_limit = 10000
+collection_jitter = "0s"
+flush_interval = "10s"
+flush_jitter = "0s"
+precision = ""
+debug = false
+quiet = false
+logfile = ""
+hostname = ""
+omit_hostname = false
+
+[[inputs.exec]]
+commands = ["/etc/telegraf/plugins/storj.py"]
+timeout = "10s"
+data_format = "influx"
+
+[[outputs.influxdb]]
+urls = ["{{ telegraf.influxdb_url }}"]
+database = "{{ telegraf.influxdb_database }}"
+retention_policy = ""
+write_consistency = "any"
+timeout = "5s"
+content_encoding = "gzip"
+{%- if telegraf.influxdb_username -%}
+username = "{{ telegraf.influxdb_username }}"
+password = "{{ telegraf.influxdb_password }}"
+{% endif -%}

@@ -1,0 +1,55 @@
+version: '3'
+services:
+{%- if miner.ether %}
+  barrenero-miner-ether:
+    image: perdy/barrenero-miner-ether:latest
+    restart: always
+    volumes:
+      - {{ common.path }}/miner/:/srv/apps/barrenero-miner-ether/config/
+      - {{ common.logs }}/miner/:/srv/apps/barrenero-miner-ether/logs/
+    command: ["start"]
+{% endif -%}
+{%- if miner.storj %}
+  barrenero-miner-storj:
+    image: perdy/barrenero-miner-storj:latest
+    restart: always
+    ports:
+      - {{ miner.storj.ports }}
+    volumes:
+      - {{ miner.storj.storage }}:/srv/apps/barrenero-miner-storj/storage/
+      - {{ common.path }}/miner/:/srv/apps/barrenero-miner-storj/config/
+      - {{ common.logs }}/miner/:/srv/apps/barrenero-miner-storj/logs/
+    command: ["start"]
+{% endif -%}
+{%- if api %}
+  barrenero-api:
+    image: perdy/barrenero-api:latest
+    restart: always
+    ports:
+      - 80:80
+    env_file: {{ common.path }}api/setup.cfg
+    volumes:
+      - {{ common.logs }}:/srv/apps/barrenero-api/logs/
+    command: ["start"]
+{% endif -%}
+{%- if telegraf %}
+  barrenero-telegraf:
+    image: perdy/barrenero-telegraf:latest
+    restart: always
+    links:
+      - api
+    volumes:
+      - {{ common.path }}telegraf/:/etc/telegraf/
+    command: ["telegraf"]
+{% endif -%}
+{%- if telegram %}
+  barrenero-telegram:
+    image: perdy/barrenero-telegram:latest
+    restart: always
+    links:
+      - api
+    volumes:
+      - {{ common.path }}telegram/config/:/etc/barrenero/barrenero-telegram/
+      - {{ common.logs }}telegram/:/srv/apps/barrenero-telegram/logs/
+    command: ["start"]
+{% endif -%}

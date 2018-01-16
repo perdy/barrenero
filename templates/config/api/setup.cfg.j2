@@ -1,0 +1,5 @@
+DJANGO_SECRET_KEY={{ api.secret_key }}
+DJANGO_API_SUPERUSER=your_encripted_password
+DJANGO_ETHERSCAN_TOKEN=your_etherscan_token
+DJANGO_ETHPLORER_TOKEN={{ api.ethplorer }}
+DJANGO_WORKER_NAME={{ miner.ether.worker if miner.ether is defined else 'Barrenero' }}

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
+import json
 import logging
 import os
-import shlex
-import subprocess
-import sys
-
+import pprint
 import shutil
+import sys
+import uuid
 from functools import wraps
+
+import jinja2
 
 try:
     from clinner.command import command, Type as CommandType
@@ -28,6 +30,8 @@ except ImportError:
 
 logger = logging.getLogger('cli')
 
+PATH = os.path.realpath(os.path.dirname(__file__))
+
 DONATE_TEXT = '''
 This project is free and open sourced, you can use it, spread the word, contribute to the codebase and help us donating:
 * Ether: 0x566d41b925ed1d9f643748d652f4e66593cba9c9
@@ -35,34 +39,12 @@ This project is free and open sourced, you can use it, spread the word, contribu
 * PayPal: barrenerobot@gmail.com
 '''
 
-SERVICES = {
-    'api': {
-        'url': 'https://github.com/PeRDy/barrenero-api',
-        'name': 'barrenero-api',
-        'systemd': ['barrenero_api']
-    },
-    'miner': {
-        'url': 'https://github.com/PeRDy/barrenero-miner',
-        'name': 'barrenero-miner',
-        'systemd': ['barrenero_miner_ether', 'barrenero_miner_storj']
-    },
-    'telegram': {
-        'url': 'https://github.com/PeRDy/barrenero-telegram',
-        'name': 'barrenero-telegram',
-        'systemd': ['barrenero_telegram']
-    },
-    'telegraf': {
-        'url': 'https://github.com/PeRDy/barrenero-telegraf',
-        'name': 'barrenero-telegraf',
-        'systemd': ['barrenero_telegraf']
-    },
-}
-
-
-class Main(ClinnerMain):
-    commands = [
-        'clinner.run.commands.sphinx.sphinx',
-    ]
+SERVICES = (
+    'api',
+    'miner',
+    'telegram',
+    'telegraf',
+)
 
 
 def superuser(func):
@@ -85,10 +67,14 @@ def donate(func):
         logger.info(DONATE_TEXT)
 
         return result
+
     return wrapper
 
 
 def default_input(input_str, default=None):
+    if default is None:
+        default = ''
+
     input_str = input_str + ' [{}]: '.format(default)
     return input(input_str) or default
 
@@ -108,158 +94,218 @@ def bool_input(input_str):
     return result
 
 
-def install_service(service, *args, **kwargs):
-    service_path = os.path.abspath(os.path.join(os.getcwd(), SERVICES[service]['name']))
+def generate_miner_config(config):
+    """
+    Ask for config parameters of Barrenero Miner.
 
-    # Clone or update
-    if not os.path.exists(service_path):
-        logger.info('Downloading Barrenero %s', service)
-        service_repo = Repo.clone_from(SERVICES[service]['url'], service_path)
-        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
-    else:
-        logger.info('Updating Barrenero %s', service)
-        service_repo = Repo(service_path)
-        service_repo.remotes.origin.fetch()
-        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
-        service_repo.remotes.origin.pull()
+    :param config: Config dict.
+    """
+    config['miner'] = {}
 
-    # Run installation
-    os.chdir(service_path)
-    cmd_args = ' '.join(args)
-    cmd_kwargs = ' '.join(['--{}={}'.format(k, v) if v is not None else '--{}'.format(k) for k, v in kwargs.items()])
-    cmd = './make install {} {}'.format(cmd_kwargs, cmd_args)
-    subprocess.run(shlex.split(cmd))
+    if bool_input('Do you want to install Ether Miner?'):
+        config['miner']['ether'] = {
+            'worker': default_input('Worker name', default='Barrenero')
+        }
 
+    if bool_input('Do you want to install Storj Miner?'):
+        config['miner']['storj'] = {
+            'storage': default_input('Storage path', default='/storage/storj/'),
+            'ports': default_input('Node ports', default='4000-4003'),
+        }
 
-def update_service(service, path):
-    service_path = os.path.abspath(os.path.join(path, 'barrenero', SERVICES[service]['name']))
-
-    # Check if service already exists and update it
-    if not os.path.exists(service_path):
-        logger.info('Barrenero %s is not installed', service)
-    else:
-        logger.info('Updating Barrenero %s', service)
-        service_repo = Repo(service_path)
-        service_repo.remotes.origin.fetch()
-        service_repo.heads.master.set_tracking_branch(service_repo.remotes.origin.refs.master)
-        service_repo.remotes.origin.pull()
+        logger.info('If you want to user Storj miner, put your node config in {}'.format(
+            os.path.join(config['common']['path'], 'barrenero-miner', 'storj.json')))
 
 
-def restart_service(service, path):
-    service_path = os.path.abspath(os.path.join(path, 'barrenero', SERVICES[service]['name']))
+def generate_api_config(config):
+    """
+    Ask for config parameters of Barrenero API.
 
-    # Check if service already exists and update it
-    if not os.path.exists(service_path):
-        logger.info('Barrenero %s is not installed', service)
-    else:
-        logger.info('Updating Barrenero %s', service)
-        os.chdir(service_path)
-        subprocess.run(shlex.split('./make restart'))
+    :param config: Config dict.
+    """
+    config['api'] = {
+        'secret_key': default_input('A secret key', default=uuid.uuid4().hex),
+        'ethplorer': default_input('Ethplorer API token: '),
+    }
 
 
-def build_service(service, path, no_cache):
-    service_path = os.path.abspath(os.path.join(path, 'barrenero', SERVICES[service]['name']))
+def generate_telegram_config(config):
+    """
+    Ask for config parameters of Barrenero Telegram.
 
-    # Check if service already exists and update it
-    if not os.path.exists(service_path):
-        logger.info('Barrenero %s is not installed', service)
-    else:
-        logger.info('Updating Barrenero %s', service)
-        os.chdir(service_path)
-        cmd = shlex.split('./make build')
-        if no_cache:
-            cmd.append('--no-cache')
-        subprocess.run(cmd)
+    :param config: Config dict.
+    """
+    config['telegram'] = {
+        'bot_token': default_input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot)  '
+                                   'and introduce the token generated: ')
+    }
+
+
+def generate_telegraf_config(config):
+    """
+    Ask for config parameters of Barrenero Telegraf.
+
+    :param config: Config dict.
+    """
+    config['telegraf'] = {
+        'api_token': default_input('Create a user in Barrenero API and introduce its token: '),
+        'influxdb_url': default_input('InfluxDB URL', default='https://influxdb.yourdomain.com'),
+        'influxdb_database': default_input('InfluxDB Database', default='yourdatabase'),
+    }
+
+    if bool_input('InfluxDB needs authentication?'):
+        config['telegraf'].update({
+            'influxdb_username': default_input('InfluxDB Username'),
+            'influxdb_password': default_input('InfluxDB Password'),
+        })
+
+
+def create_lib_files(config):
+    os.makedirs(config['common']['lib'], exist_ok=True)
+    j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'lib')))
+
+    for template in os.listdir(os.path.join(PATH, 'templates', 'lib')):
+        with open(os.path.join(config['common']['lib'], os.path.splitext(template)[0]), 'w') as f:
+            f.write(j2_env.get_template(template).render(config))
+
+
+def create_config_files(config):
+    """
+    Create config files using templates based on given config.
+
+    :param config: Jinja2 Context.
+    """
+    os.makedirs(config['common']['path'], exist_ok=True)
+    j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'config')))
+
+    # Generate common config files
+    for template in [i for i in os.listdir(os.path.join(PATH, 'templates', 'config'))
+                     if os.path.isfile(os.path.join(PATH, 'templates', 'config', i))]:
+        with open(os.path.join(config['common']['path'], os.path.splitext(template)[0]), 'w') as f:
+            f.write(j2_env.get_template(template).render(config))
+
+    # Generate config files for miner service
+    os.makedirs(os.path.join(config['common']['path'], 'miner'), exist_ok=True)
+    for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'miner')):
+        template_name = os.path.splitext(template)[0]
+        miner_name = os.path.splitext(template_name)[0]
+        if miner_name in config['miner']:
+            with open(os.path.join(config['common']['path'], 'miner', template_name), 'w') as f:
+                f.write(j2_env.get_template(os.path.join('miner', template)).render(config))
+
+    # Generate config files for telegraf service
+    if 'telegraf' in config:
+        os.makedirs(os.path.join(config['common']['path'], 'telegraf'), exist_ok=True)
+        for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'telegraf')):
+            with open(os.path.join(config['common']['path'], 'telegraf', os.path.splitext(template)[0]), 'w') as f:
+                f.write(j2_env.get_template(os.path.join('telegraf', template)).render(config))
+
+    # Generate config files for telegram service
+    if 'telegram' in config:
+        os.makedirs(os.path.join(config['common']['path'], 'telegram'), exist_ok=True)
+        for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'telegram')):
+            with open(os.path.join(config['common']['path'], 'telegram', os.path.splitext(template)[0]), 'w') as f:
+                f.write(j2_env.get_template(os.path.join('telegram', template)).render(config))
+
+    # Generate config files for api service
+    if 'api' in config:
+        os.makedirs(os.path.join(config['common']['path'], 'api'), exist_ok=True)
+        for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'api')):
+            with open(os.path.join(config['common']['path'], 'api', os.path.splitext(template)[0]), 'w') as f:
+                f.write(j2_env.get_template(os.path.join('api', template)).render(config))
+
+
+def create_log_dirs(config):
+    """
+    Create log directories based on given config.
+
+    :param config: Config.
+    """
+    os.makedirs(config['common']['logs'], exist_ok=True)
+    for service in [k for k in config if k in SERVICES]:
+        os.makedirs(os.path.join(config['common']['logs'], service), exist_ok=True)
 
 
 @command(command_type=CommandType.PYTHON,
-         args=((('service',), {'help': 'Services to update', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
-               (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
-         parser_opts={'help': 'Update Barrenero services'})
-@donate
-@superuser
-def update(*args, **kwargs):
-    for service in kwargs['service']:
-        update_service(service, kwargs['path'])
-
-
-@command(command_type=CommandType.PYTHON,
-         args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
-               (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
+         args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': SERVICES}),
+               (('-s', '--save-config'), {'help': 'Save generated config to given file'}),
+               (('-c', '--config'), {'help': 'Config file'}),),
          parser_opts={'help': 'Install Barrenero services'})
 @donate
 @superuser
 def install(*args, **kwargs):
-    barrenero_path = os.path.abspath(os.path.join(kwargs['path'], 'barrenero'))
-    if 'miner' in kwargs['service']:
-        nvidia = bool_input('Do you want to install Nvidia Overclock service?')
-        storj_path = default_input('Absolute path to Storj storage', default='/storage/storj')
-        storj_ports = default_input('Ports range to be used by Storj', default='4000-4004')
-
-        install_kwargs = {
-            'path': barrenero_path
+    if kwargs['config']:
+        with open(kwargs['config']) as f:
+            config = json.load(f)
+    else:
+        config = {
+            'common': {
+                'path': default_input('Config files path', default='/etc/barrenero/'),
+                'logs': default_input('Log files path', default='/var/log/barrenero/'),
+                'lib': default_input('Lib files path', default='/usr/local/lib/barrenero/'),
+                'email': default_input('Email', default='your@email.com'),
+                'wallet': default_input('Wallet', default='0x566d41b925ed1d9f643748d652f4e66593cba9c9'),
+            }
         }
-        if nvidia:
-            install_kwargs['nvidia'] = None
 
-        install_service('miner', storj_path, storj_ports, **install_kwargs)
+        if bool_input('Do you want to install Nvidia Overclock service?'):
+            config['common']['nvidia'] = default_input(
+                'Which Nvidia graphics card want to overclock?', default='0,1,2,3,4').split(',')
 
-    if 'api' in kwargs['service']:
-        install_service('api', path=barrenero_path)
+        generate_miner_config(config)
 
-    if 'telegram' in kwargs['service']:
-        bot_token = input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot) and '
-                          'introduce the token generated: ')
-        install_service('telegram', bot_token, path=barrenero_path)
+        if 'api' in kwargs['service']:
+            generate_api_config(config)
 
-    if 'telegraf' in kwargs['service']:
-        barrenero_api_token = input('Barrenero API token: ')
-        influxdb_url = input('InfluxDB URL: ')
-        influxdb_database = input('InfluxDB Database: ')
-        influxdb_username = input('InfluxDB Username: ')
-        influxdb_password = input('InfluxDB Password: ')
+        if 'telegram' in kwargs['service']:
+            generate_telegram_config(config)
 
-        install_kwargs = {
-            'pathh': barrenero_path,
-        }
-        if influxdb_username:
-            install_kwargs.update({
-                'influxdb_username': influxdb_username,
-                'influxdb_password': influxdb_password,
-            })
-        install_service('telegraf', barrenero_api_token, influxdb_url, influxdb_database, **install_kwargs)
+        if 'telegraf' in kwargs['service']:
+            generate_telegraf_config(config)
+
+    print('This is your current config:\n{}'.format(pprint.pformat(config, indent=2, width=120)))
+    if kwargs['save_config']:
+        with open(kwargs['save_config'], 'w') as f:
+            json.dump(config, f)
+
+    if bool_input('Do you want to proceed with installation?'):
+        create_config_files(config)
+        create_log_dirs(config)
+        create_lib_files(config)
 
 
 @command(command_type=CommandType.PYTHON,
-         args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
-               (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
-         parser_opts={'help': 'Restart Barrenero services'})
+         args=((('--path',), {'help': 'Barrenero config full path', 'default': '/etc/barrenero/'}),
+               (('--log-path',), {'help': 'Barrenero log full path', 'default': '/var/log/barrenero/'}),
+               (('--lib-path',), {'help': 'Barrenero lib full path', 'default': '/usr/local/lib/barrenero/'}),
+               (('-c', '--config'), {'help': 'Config file'}),),
+         parser_opts={'help': 'Clean installer'})
 @donate
 @superuser
-def restart(*args, **kwargs):
-    for service in kwargs['service']:
-        restart_service(service, kwargs['path'])
-
-
-@command(command_type=CommandType.PYTHON,
-         args=((('service',), {'help': 'Services to build', 'nargs': '+', 'choices': tuple(SERVICES.keys())}),
-               (('--no-cache',), {'help': 'Full build without using cache', 'action': 'store_true'}),
-               (('--path',), {'help': 'Barrenero full path', 'default': '/usr/local/lib'}),),
-         parser_opts={'help': 'Build Barrenero services'})
-@donate
-@superuser
-def build(*args, **kwargs):
-    for service in kwargs['service']:
-        build_service(service, kwargs['path'], kwargs['no_cache'])
-
-
-@command(command_type=CommandType.PYTHON, parser_opts={'help': 'Clean installer'})
-@donate
 def clean(*args, **kwargs):
-    shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-miner')), ignore_errors=True)
-    shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-api')), ignore_errors=True)
-    shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-telegram')), ignore_errors=True)
-    shutil.rmtree(os.path.abspath(os.path.join(os.getcwd(), 'barrenero-telegraf')), ignore_errors=True)
+    if kwargs['config']:
+        with open(kwargs['config']) as f:
+            config = json.load(f)
+
+        config_path = config['common']['path']
+        log_path = config['common']['logs']
+        lib_path = config['common']['lib']
+    else:
+        config_path = kwargs['path']
+        log_path = kwargs['logs']
+        lib_path = kwargs['lib']
+
+    shutil.rmtree(os.path.abspath(config_path), ignore_errors=True)
+    shutil.rmtree(os.path.abspath(log_path), ignore_errors=True)
+    shutil.rmtree(os.path.abspath(lib_path), ignore_errors=True)
+
+
+class Main(ClinnerMain):
+    commands = [
+        'clinner.run.commands.sphinx.sphinx',
+        'install',
+        'clean',
+    ]
 
 
 if __name__ == '__main__':

@@ -43,7 +43,7 @@ html_theme_options = {
     'navigation_depth': 2,
 }
 
-# Add any paths that contain templates here, relative to this directory.
+# Add any paths that contain barrenero-telegram here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.

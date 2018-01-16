@@ -1,0 +1,14 @@
+[nvidia]
+graphic_cards = {{ common.nvidia|join(',') }}
+compute_mode = 0
+persistent_mode = 1
+max_power = 100
+{% for i in common.nvidia %}
+[nvidia:{{ i }}]
+powermizer_mode = 1
+graphics_clock_offset = 100
+memory_transfer_rate_offset = 700
+fan_control = 1
+fan_speed = 80
+{% endfor %}
+

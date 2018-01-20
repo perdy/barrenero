@@ -49,7 +49,7 @@ services:
     links:
       - api
     volumes:
-      - {{ common.path }}telegram/config/:/etc/barrenero/barrenero-telegram/
+      - {{ common.path }}telegram/:/src/apps/barrenero-telegram/config/
       - {{ common.logs }}telegram/:/srv/apps/barrenero-telegram/logs/
     command: ["start"]
 {% endif -%}

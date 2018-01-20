@@ -136,8 +136,8 @@ def generate_telegram_config(config):
     :param config: Config dict.
     """
     config['telegram'] = {
-        'bot_token': default_input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot)  '
-                                   'and introduce the token generated: ')
+        'token': default_input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot)  '
+                               'and introduce the token generated: ')
     }
 
 

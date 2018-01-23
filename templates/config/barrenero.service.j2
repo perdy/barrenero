@@ -1,0 +1,13 @@
+[Unit]
+Description=Barrenero Stack
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory={{ common.path }}
+Restart=always
+ExecStart=/usr/sbin/docker-compose up
+ExecStop=/usr/sbin/docker-compose down
+
+[Install]
+WantedBy=default.target

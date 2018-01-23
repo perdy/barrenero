@@ -1,0 +1,10 @@
+[Unit]
+Description=Nvidia tuning for Miner
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+WorkingDirectory={{ common.lib }}
+ExecStart=/usr/bin/python3 nvidia_tuning.py start
+RemainAfterExit=yes

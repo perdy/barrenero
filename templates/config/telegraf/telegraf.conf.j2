@@ -14,7 +14,7 @@ hostname = ""
 omit_hostname = false
 
 [[inputs.exec]]
-commands = ["/etc/telegraf/plugins/storj.py"]
+commands = ["/srv/apps/barrenero-telegraf/telegraf/plugins/storj.py"]
 timeout = "10s"
 data_format = "influx"
 
@@ -25,7 +25,7 @@ retention_policy = ""
 write_consistency = "any"
 timeout = "5s"
 content_encoding = "gzip"
-{%- if telegraf.influxdb_username -%}
+{% if telegraf.influxdb_username -%}
 username = "{{ telegraf.influxdb_username }}"
 password = "{{ telegraf.influxdb_password }}"
 {% endif -%}

@@ -26,7 +26,7 @@ Request
 URL
 ^^^
 
-`/api/v1/storj`
+`/api/v1/storj/`
 
 Headers
 ^^^^^^^
@@ -52,6 +52,9 @@ Response
         "delta": int,
         "port": int,
         "shared": string,
-        "shared_percent": int
+        "shared_percent": int,
+        "response_time": float,
+        "reputation": int,
+        "version": string
       }
     ]

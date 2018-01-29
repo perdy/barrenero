@@ -28,8 +28,7 @@ These are the resources exposed by Barrenero API.
     Login User<resources/login_user.rst>
     Barrenero Status<resources/status.rst>
     Restart Service<resources/restart.rst>
-    Ether Miner Status<resources/ether_status.rst>
-    Ether Miner Nanopool<resources/ether_nanopool.rst>
+    Ether Miner Status<resources/ether.rst>
     Storj Miner Status<resources/storj.rst>
     Wallet<resources/wallet.rst>
 

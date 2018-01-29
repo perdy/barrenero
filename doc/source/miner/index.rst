@@ -18,21 +18,13 @@
 Miner
 =====
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents
-
-   Installation<installation.rst>
-
 Overview
 --------
-
-Miner code can be found in this `repository <https://github.com/PeRDy/barrenero-miner>`_.
 
 This service aims to create a platform that provides an easy way of adding miners for different cryptocurrencies,
 isolating each miner into a docker container, easy to build, update and independent of the system.
 
 Miners currently supported:
 
-* Ether (`ethminer <https://github.com/ethereum-mining/ethminer>`_).
-* Storj (`storj <https://storj.io/>`_).
+* `Ether <https://github.com/PeRDy/barrenero-miner-ether>`_) based on *ethminer*.
+* `Storj <https://github.com/PeRDy/barrenero-miner-storj>`_).

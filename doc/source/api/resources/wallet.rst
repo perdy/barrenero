@@ -26,7 +26,7 @@ Request
 URL
 ^^^
 
-`/api/v1/wallet`
+`/api/v1/wallet/`
 
 Headers
 ^^^^^^^

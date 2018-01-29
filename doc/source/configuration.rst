@@ -20,9 +20,13 @@ Configuration
 
 To properly configure Barrenero you must configure each service that composes it.
 
+Nvidia Overclock
+----------------
+Self-explained configuration parameters in *nvdia.cfg* file.
+
 Miner
 -----
-Configure parameters in *setup.cfg* file.
+Self-explained configuration parameters in *miner/<currency>.cfg* file.
 
 API
 ---
@@ -30,4 +34,8 @@ Configuration explanation can be found :doc:`here <api/configuration>`.
 
 Telegram
 --------
-Configure parameters in *setup.cfg* file.
+Self-explained configuration parameters in *telegram/setup.cfg* file.
+
+Telegraf
+--------
+Self-explained configuration parameters in *telegraf/setup.cfg* file.

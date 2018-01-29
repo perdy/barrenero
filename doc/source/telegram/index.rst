@@ -18,12 +18,6 @@
 Telegram
 ========
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Contents
-
-   Installation<installation.rst>
-
 Overview
 --------
 

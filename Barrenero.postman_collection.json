@@ -1,10 +1,9 @@
 {
-	"variables": [],
 	"info": {
 		"name": "Barrenero",
 		"_postman_id": "6a4f1b69-2610-fc9c-aed0-057b1755f964",
 		"description": "Barrenero API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
@@ -26,36 +25,29 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}/api/v1/auth/register",
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "username",
-									"value": "",
-									"description": "Username",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "",
-									"description": "Password",
-									"type": "text"
-								},
-								{
-									"key": "account",
-									"value": "",
-									"description": "Wallet account",
-									"type": "text"
-								},
-								{
-									"key": "api_password",
-									"value": "",
-									"description": "API Superuser Password",
-									"type": "text"
-								}
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"foo\",\n\t\"password\": \"bar\",\n\t\"account\": \"0x566d41b925ed1d9f643748d652f4e66593cba9c9\",\n\t\"api_password\": \"foobar\"\n}"
+						},
+						"url": {
+							"raw": "http://{{host}}/api/v1/auth/register/",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register",
+								""
 							]
 						},
 						"description": "Register a new user providing username, password, account and api_password"
@@ -77,24 +69,29 @@
 						}
 					],
 					"request": {
-						"url": "http://{{host}}/api/v1/auth/user",
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "username",
-									"value": "",
-									"description": "Username",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "",
-									"description": "Password",
-									"type": "text"
-								}
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"foo\",\n\t\"password\": \"bar\"\n}"
+						},
+						"url": {
+							"raw": "http://{{host}}/api/v1/auth/user/",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"user",
+								""
 							]
 						},
 						"description": "Retrieve user token and user given username and password"
@@ -105,74 +102,12 @@
 		},
 		{
 			"name": "Ether",
-			"description": "",
-			"item": [
-				{
-					"name": "Status",
-					"request": {
-						"url": "http://{{host}}/api/v1/ether/status",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Token {{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "barrenero_miner_ether",
-									"description": "Systemd service name",
-									"type": "text"
-								}
-							]
-						},
-						"description": "Retrieve Ether miner status"
-					},
-					"response": []
-				},
-				{
-					"name": "Nanopool",
-					"request": {
-						"url": "http://{{host}}/api/v1/ether/nanopool",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Token {{token}}",
-								"description": ""
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "name",
-									"value": "barrenero_miner_ether",
-									"description": "Systemd service name",
-									"type": "text"
-								}
-							]
-						},
-						"description": "Retrieve Ether nanopool status"
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Restart",
 			"request": {
-				"url": "http://{{host}}/api/v1/restart",
-				"method": "POST",
+				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Token {{token}}",
-						"description": ""
+						"value": "Token {{token}}"
 					}
 				],
 				"body": {
@@ -186,20 +121,66 @@
 						}
 					]
 				},
-				"description": "Restart a Barrenero's Systemd service giving the name"
+				"url": {
+					"raw": "http://{{host}}/api/v1/ether/status",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"ether",
+						"status"
+					]
+				},
+				"description": "Retrieve Ether miner status"
+			},
+			"response": []
+		},
+		{
+			"name": "Restart",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Ether\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/api/v1/restart/",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"restart",
+						""
+					]
+				},
+				"description": "Restart a Barrenero service giving the name"
 			},
 			"response": []
 		},
 		{
 			"name": "Status",
 			"request": {
-				"url": "http://{{host}}/api/v1/status",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Token {{token}}",
-						"description": ""
+						"value": "Token {{token}}"
 					}
 				],
 				"body": {
@@ -213,20 +194,30 @@
 						}
 					]
 				},
-				"description": "Retrieve graphic cards and systemd services status"
+				"url": {
+					"raw": "http://{{host}}/api/v1/status",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"status"
+					]
+				},
+				"description": "Retrieve graphic cards and services status"
 			},
 			"response": []
 		},
 		{
 			"name": "Wallet",
 			"request": {
-				"url": "http://{{host}}/api/v1/wallet",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Token {{token}}",
-						"description": ""
+						"value": "Token {{token}}"
 					}
 				],
 				"body": {
@@ -238,6 +229,19 @@
 							"description": "Systemd service name",
 							"type": "text"
 						}
+					]
+				},
+				"url": {
+					"raw": "http://{{host}}/api/v1/wallet/",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"wallet",
+						""
 					]
 				},
 				"description": "Wallet status, including balance for each token and last transactions."
@@ -247,13 +251,11 @@
 		{
 			"name": "Storj",
 			"request": {
-				"url": "http://{{host}}/api/v1/storj",
 				"method": "GET",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Token {{token}}",
-						"description": ""
+						"value": "Token {{token}}"
 					}
 				],
 				"body": {
@@ -265,6 +267,19 @@
 							"description": "Systemd service name",
 							"type": "text"
 						}
+					]
+				},
+				"url": {
+					"raw": "http://{{host}}/api/v1/storj/",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"storj",
+						""
 					]
 				},
 				"description": "Retrieve Storj nodes status"

@@ -15,10 +15,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Ether Miner Nanopool
-====================
+Ether Miner Status
+==================
 
-Retrieve Ether nanopool status.
+Retrieve Ether miner status.
 
 Request
 -------
@@ -26,7 +26,7 @@ Request
 URL
 ^^^
 
-`/api/v1/ether/nanopool`
+`/api/v1/ether/`
 
 Headers
 ^^^^^^^
@@ -40,28 +40,37 @@ Response
 .. code:: javascript
 
     {
-      "balance": {
-        "confirmed": float,
-        "unconfirmed": float
-      },
-      "hashrate": {
-        "current": float,
-        "one_hour": float,
-        "three_hours": float,
-        "six_hours": float,
-        "twelve_hours": float,
-        "twenty_four_hours": float
-      },
-      "workers": [
+      "status": "active/inactive",
+      "hashrate": [
         {
-          "id": string,
+          "graphic_card": int,
           "hashrate": float
         }
       ],
-      "last_payment": {
-        "date": string,
-        "hash": string,
-        "value": float,
-        "confirmed": bool
+      "nanopool": {
+        "balance": {
+          "confirmed": float,
+          "unconfirmed": float
+        },
+        "hashrate": {
+          "current": float,
+          "one_hour": float,
+          "three_hours": float,
+          "six_hours": float,
+          "twelve_hours": float,
+          "twenty_four_hours": float
+        },
+        "workers": [
+          {
+            "id": string,
+            "hashrate": float
+          }
+        ],
+        "last_payment": {
+          "date": string,
+          "hash": string,
+          "value": float,
+          "confirmed": bool
+        }
       }
     }

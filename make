@@ -4,6 +4,7 @@ import logging
 import os
 import pprint
 import shutil
+import subprocess
 import sys
 import uuid
 from functools import wraps
@@ -226,6 +227,24 @@ def create_log_dirs(config):
         os.makedirs(os.path.join(config['common']['logs'], service), exist_ok=True)
 
 
+def create_systemd_services(config):
+    """
+    Create systemd services based on given config.
+
+    :param config: Config.
+    """
+    if config['common']['systemd']:
+        j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'lib')))
+
+        for template in os.listdir(os.path.join(PATH, 'templates', 'systemd')):
+            service_name = os.path.splitext(template)[0]
+
+            with open(os.path.join('/etc/systemd/system/', service_name), 'w') as f:
+                f.write(j2_env.get_template(template).render(config))
+
+            subprocess.run('systemctl enable {}'.format(service_name))
+
+
 @command(command_type=CommandType.PYTHON,
          args=((('service',), {'help': 'Services to install', 'nargs': '+', 'choices': SERVICES}),
                (('-s', '--save-config'), {'help': 'Save generated config to given file'}),
@@ -245,12 +264,13 @@ def install(*args, **kwargs):
                 'lib': default_input('Lib files path', default='/usr/local/lib/barrenero/'),
                 'email': default_input('Email', default='your@email.com'),
                 'wallet': default_input('Wallet', default='0x566d41b925ed1d9f643748d652f4e66593cba9c9'),
+                'systemd': bool_input('Do you want to add Systemd services to run Barrenero?'),
             }
         }
 
         if bool_input('Do you want to install Nvidia Overclock service?'):
             config['common']['nvidia'] = default_input(
-                'Which Nvidia graphics card want to overclock?', default='0,1,2,3,4').split(',')
+                'Which Nvidia graphics card want to overclock (Bus ID)?', default='0,1,2,3,4').split(',')
 
         generate_miner_config(config)
 
@@ -264,7 +284,10 @@ def install(*args, **kwargs):
             generate_telegraf_config(config)
 
     print('This is your current config:\n{}'.format(pprint.pformat(config, indent=2, width=120)))
-    if kwargs['save_config']:
+    if kwargs['save_config'] or bool_input('Do you want to save it?'):
+        if not kwargs['save_config']:
+            kwargs['save_config'] = default_input('File to save config', default='config.json')
+
         with open(kwargs['save_config'], 'w') as f:
             json.dump(config, f)
 
@@ -272,6 +295,7 @@ def install(*args, **kwargs):
         create_config_files(config)
         create_log_dirs(config)
         create_lib_files(config)
+        create_systemd_services(config)
 
 
 @command(command_type=CommandType.PYTHON,
@@ -300,11 +324,30 @@ def clean(*args, **kwargs):
     shutil.rmtree(os.path.abspath(lib_path), ignore_errors=True)
 
 
+@command(command_type=CommandType.PYTHON,
+         args=((('--path',), {'help': 'Barrenero config full path', 'default': '/etc/barrenero/'}),
+               (('-c', '--config'), {'help': 'Config file'}),),
+         parser_opts={'help': 'Update Barrenero services'})
+@donate
+@superuser
+def update(*args, **kwargs):
+    if kwargs['config']:
+        with open(kwargs['config']) as f:
+            config = json.load(f)
+
+        config_path = config['common']['path']
+    else:
+        config_path = kwargs['path']
+
+    subprocess.run('docker-compose -f {} build --no-cache'.format(os.path.join(config_path, 'docker-compose.yml')))
+
+
 class Main(ClinnerMain):
     commands = [
         'clinner.run.commands.sphinx.sphinx',
         'install',
         'clean',
+        'update',
     ]
 
 

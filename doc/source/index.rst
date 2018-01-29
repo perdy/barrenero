@@ -32,7 +32,8 @@ Barrenero consists of following services:
 
 Miner
    Tools and scripts for mining cryptocurrencies.
-   Code can be found in this `repository <https://github.com/PeRDy/barrenero-miner>`_.
+   Code can be found in different repositories: `ether <https://github.com/PeRDy/barrenero-miner-ether>`_,
+   `storj <https://github.com/PeRDy/barrenero-miner-storj>`_.
 
 API
    REST API for interacting with Barrenero.

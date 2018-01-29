@@ -22,7 +22,6 @@ API
    :maxdepth: 2
    :caption: Contents
 
-   Installation<installation.rst>
    Configuration<configuration.rst>
    API Resources<resources.rst>
 

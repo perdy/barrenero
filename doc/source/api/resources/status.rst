@@ -18,7 +18,7 @@
 Barrenero Status
 ================
 
-Retrieve graphic cards and systemd services status.
+Retrieve graphic cards and services status.
 
 Request
 -------
@@ -26,7 +26,7 @@ Request
 URL
 ^^^
 
-`/api/v1/status`
+`/api/v1/status/`
 
 Headers
 ^^^^^^^
@@ -54,11 +54,11 @@ Response
       "services": [
         {
           "name": "Ether",
-          "status": "active"
+          "status": "active/inactive"
         },
         {
           "name": "Storj",
-          "status": "active"
+          "status": "active/inactive"
         }
       ]
     }

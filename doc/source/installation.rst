@@ -26,18 +26,6 @@ Installation
 
 2. Configure barrenero services as explained :doc:`here <configuration>`.
 
-3. Build services:
-
-    .. code:: console
-
-        sudo ./make build
-
-4. Reboot or restart barrenero:
-
-    .. code:: console
-
-        sudo ./make restart
-
 Update
 ======
 
@@ -46,15 +34,3 @@ Update
     .. code:: console
 
         sudo ./make update
-
-2. Build services:
-
-    .. code:: console
-
-        sudo ./make build --no-cache
-
-2. Reboot or restart barrenero:
-
-    .. code:: console
-
-        sudo ./make restart

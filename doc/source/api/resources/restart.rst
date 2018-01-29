@@ -18,7 +18,7 @@
 Restart Service
 ===============
 
-Restart a Barrenero's Systemd service giving the name.
+Restart a Barrenero service giving the name.
 
 Request
 -------
@@ -26,7 +26,7 @@ Request
 URL
 ^^^
 
-`/api/v1/restart`
+`/api/v1/restart/`
 
 Headers
 ^^^^^^^
@@ -38,7 +38,7 @@ Parameters
 ^^^^^^^^^^
 
 name
-    Systemd service name to restart
+    Barrenero service name to restart
 
 Response
 --------
@@ -46,6 +46,6 @@ Response
 .. code:: javascript
 
     {
-      "name": "barrenero_miner_ether",
+      "name": "Ether",
       "status": "restarted"
     }

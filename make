@@ -127,7 +127,7 @@ def generate_api_config(config):
     """
     config['api'] = {
         'secret_key': default_input('A secret key', default=uuid.uuid4().hex),
-        'ethplorer': default_input('Ethplorer API token: '),
+        'ethplorer': default_input('Ethplorer API token', default='freekey'),
     }
 
 
@@ -138,8 +138,10 @@ def generate_telegram_config(config):
     :param config: Config dict.
     """
     config['telegram'] = {
-        'token': default_input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot)  '
-                               'and introduce the token generated: ')
+        'token': default_input('Register your bot in Telegram (https://core.telegram.org/bots#creating-a-new-bot) and '
+                               'introduce the token generated'),
+        'url': default_input('Endpoint for registering your bot', default='https://barrenero.yourdomain.com/'),
+        'port': default_input('Port for previous endpoint', default='8443'),
     }
 
 

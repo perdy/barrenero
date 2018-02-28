@@ -48,6 +48,8 @@ services:
   barrenero-telegram:
     image: perdy/barrenero-telegram:latest
     container_name: barrenero-telegram
+    ports:
+      - 8443:8443
     links:
       - barrenero-api
     volumes:

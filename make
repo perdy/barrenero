@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import pprint
+import shlex
 import shutil
 import subprocess
 import sys
@@ -234,7 +235,8 @@ def create_systemd_services(config):
     :param config: Config.
     """
     if config['common']['systemd']:
-        j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'lib')))
+        j2_env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'config', 'systemd')))
 
         for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'systemd')):
             service_name = os.path.splitext(template)[0]
@@ -242,7 +244,7 @@ def create_systemd_services(config):
             with open(os.path.join('/etc/systemd/system/', service_name), 'w') as f:
                 f.write(j2_env.get_template(template).render(config))
 
-            subprocess.run('systemctl enable {}'.format(service_name))
+            subprocess.run(shlex.split('systemctl enable {}'.format(service_name)))
 
 
 @command(command_type=CommandType.PYTHON,

@@ -4,7 +4,6 @@ services:
   barrenero-miner-ether:
     image: perdy/barrenero-miner-ether:latest
     container_name: barrenero-miner-ether
-    restart: always
     volumes:
       - {{ common.path }}miner/:/srv/apps/barrenero-miner-ether/config/
       - {{ common.logs }}miner/ether/:/srv/apps/barrenero-miner-ether/logs/
@@ -14,7 +13,6 @@ services:
   barrenero-miner-storj:
     image: perdy/barrenero-miner-storj:latest
     container_name: barrenero-miner-storj
-    restart: always
     ports:
       - {{ miner.storj.ports }}:{{ miner.storj.ports }}
     volumes:
@@ -27,7 +25,6 @@ services:
   barrenero-api:
     image: perdy/barrenero-api:latest
     container_name: barrenero-api
-    restart: always
     ports:
       - 80:80
     env_file: {{ common.path }}api/setup.cfg
@@ -41,7 +38,6 @@ services:
   barrenero-telegraf:
     image: perdy/barrenero-telegraf:latest
     container_name: barrenero-telegraf
-    restart: always
     links:
       - barrenero-api
     volumes:
@@ -52,7 +48,6 @@ services:
   barrenero-telegram:
     image: perdy/barrenero-telegram:latest
     container_name: barrenero-telegram
-    restart: always
     links:
       - barrenero-api
     volumes:

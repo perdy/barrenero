@@ -236,7 +236,7 @@ def create_systemd_services(config):
     if config['common']['systemd']:
         j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(os.path.join(PATH, 'templates', 'lib')))
 
-        for template in os.listdir(os.path.join(PATH, 'templates', 'systemd')):
+        for template in os.listdir(os.path.join(PATH, 'templates', 'config', 'systemd')):
             service_name = os.path.splitext(template)[0]
 
             with open(os.path.join('/etc/systemd/system/', service_name), 'w') as f:
@@ -284,7 +284,7 @@ def install(*args, **kwargs):
             generate_telegraf_config(config)
 
     print('This is your current config:\n{}'.format(pprint.pformat(config, indent=2, width=120)))
-    if kwargs['save_config'] or bool_input('Do you want to save it?'):
+    if kwargs['save_config'] or (not kwargs['config'] and bool_input('Do you want to save it?')):
         if not kwargs['save_config']:
             kwargs['save_config'] = default_input('File to save config', default='config.json')
 
@@ -316,8 +316,8 @@ def clean(*args, **kwargs):
         lib_path = config['common']['lib']
     else:
         config_path = kwargs['path']
-        log_path = kwargs['logs']
-        lib_path = kwargs['lib']
+        log_path = kwargs['log_path']
+        lib_path = kwargs['lib_path']
 
     shutil.rmtree(os.path.abspath(config_path), ignore_errors=True)
     shutil.rmtree(os.path.abspath(log_path), ignore_errors=True)

@@ -1,0 +1,4 @@
+dockerfiles/
+.git/
+.gitignore
+.venv/

@@ -1,0 +1,120 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "barrenero-miner-trex"
+version = "0.1.0"
+description = "Barrenero Miner TREX"
+authors = ["José Antonio Perdiguero López <perdy@perdy.io>"]
+license = "GPL-3.0+"
+readme = "README.md"
+repository = "https://github.com/perdy/barrenero-miner-trex"
+keywords = ["crypto", "blockchain", "cryptocurrency", "ethereum", "barrenero", "mining"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+]
+include = []
+exclude = []
+
+[tool.poetry.dependencies]
+python = "^3.8"
+clinner = "^1.12.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3"
+flake8 = "^3.7"
+isort = "^5.0"
+pytest-xdist = "^1.30"
+pytest-cov = "^2.8"
+ipython = "^7.10"
+ipdb = "^0.13.0"
+black = {version = "*", allow-prereleases = true}
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+atomic = true
+multi_line_output = 3
+include_trailing_comma = true
+line_length = 120
+skip_glob = [
+    "*/.venv/**",
+    "*/.tox/**",
+    "*/docs/**",
+    "*/build/**",
+    "*/dist/**",
+]
+
+[tool.pytest.ini_options]
+minversion = 3
+addopts = "-n auto --junitxml=./test-results/pytest/results.xml --no-cov-on-fail --cov-report=html --cov-report=xml --cov-report=term-missing --cov-config=pyproject.toml --cov=. --pdbcls=IPython.terminal.debugger:TerminalPdb"
+norecursedirs = [
+    "*settings*",
+    "*urls*",
+    ".tox*",
+    "*docs*",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = [
+    "."
+]
+branch = true
+omit = [
+    ".venv*",
+    "*settings*",
+    "*__init__.py",
+    "*__main__.py",
+    "*tests*",
+    "*/migrations/*",
+    "make",
+]
+concurrency = ["thread", "gevent"]
+
+[tool.coverage.report]
+show_missing = true
+ignore_errors = true
+fail_under = 95
+exclude_lines = [
+    "noqa",
+    "pragma: no cover",
+    "pass",
+    "\\.\\.\\.",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "def __repr__",
+    "def __str__",
+    "if cls\\.debug",
+    "if settings\\.DEBUG",
+    "if (typing\\.)?TYPE_CHECKING:",
+]
+
+[tool.coverage.paths]
+source = [
+    "./"
+]
+
+[tool.coverage.html]
+directory = "./test-results/coverage_html/"
+
+[tool.coverage.xml]
+output = "./test-results/coverage.xml"
+
+[tool.coverage.json]
+output = "./test-results/coverage.json"

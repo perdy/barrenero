@@ -1,0 +1,11 @@
+version: '3'
+services:
+{%- if miner.trex %}
+  barrenero-miner-trex:
+    image: perdy/barrenero-miner-trex:latest
+    container_name: barrenero-miner-trex
+    volumes:
+      - {{ shared.config }}miner/trex/:/srv/apps/barrenero-miner-trex/config/
+      - {{ shared.logs }}miner/trex/:/srv/apps/barrenero-miner-trex/logs/
+    command: ["start", "-c", "config/{{ miner.trex.config }}"]
+{% endif -%}

@@ -4,7 +4,7 @@ Requires=docker.service
 After=docker.service
 
 [Service]
-WorkingDirectory={{ common.path }}
+WorkingDirectory={{ shared.lib }}
 Restart=always
 ExecStart=/usr/sbin/docker-compose up
 ExecStop=/usr/sbin/docker-compose down

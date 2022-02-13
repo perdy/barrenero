@@ -35,3 +35,5 @@ pip-delete-this-directory.txt
 
 # Sphinx documentation
 doc/build/
+
+barrenero.toml

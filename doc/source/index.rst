@@ -54,7 +54,8 @@ Help us Donating
 
 This project is free and open sourced, you can use it, spread the word, contribute to the codebase and help us donating:
 
-:Ether: 0x566d41b925ed1d9f643748d652f4e66593cba9c9
+:Ether: 0x04BE4C8b74d2205b5fE2a31Ca18C670765feac7c
+:ADA: addr1qxe963ree0zmdxtqypl7uvhtuvuzlxq6vrzm0lsrfsu53lffcradg5rrhf6q2wsuae4l4hrm8trlk278awztt82j8slsqz8uz5
 :Bitcoin: 1Jtj2m65DN2UsUzxXhr355x38T6pPGhqiA
 :PayPal: barrenerobot@gmail.com
 

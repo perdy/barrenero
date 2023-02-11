@@ -29,7 +29,7 @@ flake8 = "^3.7"
 isort = "^5.0"
 pytest-xdist = "^1.30"
 pytest-cov = "^2.8"
-ipython = "^7.10"
+ipython = "^8.10"
 ipdb = "^0.13.0"
 black = {version = "*", allow-prereleases = true}
 
